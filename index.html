@@ -1,13 +1,247 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/Recycling_symbol.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EzRecycle</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EzRecycle</title>
+  <style>
+    /* ----- Base Reset & Variables ----- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #2d6a4f;
+      --primary-light: #40916c;
+      --accent: #ffd166;
+      --bg: #f8f9fa;
+      --text: #212529;
+    }
+    body { font-family: Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ----- Layout ----- */
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    }
+    header h1 { font-size: 1.5rem; }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav a { transition: opacity .2s ease; }
+    nav a:hover { opacity: .7; }
+
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+
+    section { display: none; animation: fade .4s ease-in-out forwards; }
+    section.active { display: block; }
+
+    @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ----- Home ----- */
+    #home h2 { color: var(--primary); margin-bottom: .75rem; }
+    #home p { margin-bottom: 1rem; }
+
+    /* ----- Quiz / Planner ----- */
+    .card { background: #fff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,.08); margin-bottom: 1.5rem; }
+    .card h3 { margin-bottom: .5rem; color: var(--primary-light); }
+
+    form { display: flex; gap: .75rem; flex-wrap: wrap; }
+    input[type="text"], input[type="date"] {
+      flex: 1 1 240px;
+      padding: .5rem .75rem; border: 1px solid #ccc; border-radius: 8px;
+    }
+    button { cursor: pointer; padding: .55rem 1.2rem; border: none; border-radius: 8px; background: var(--accent); color: #000; font-weight: 600; transition: background .2s; }
+    button:hover { background: #ffcd38; }
+
+    ul.task-list { list-style: none; margin-top: 1rem; }
+    ul.task-list li { display: flex; align-items: center; justify-content: space-between; padding: .5rem 0; border-bottom: 1px solid #eee; }
+    ul.task-list li span { flex: 1; }
+
+    /* ----- Resources ----- */
+    #resources a { color: var(--primary-light); text-decoration: underline; }
+    .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .resource-grid .card { height: 100%; }
+
+    /* ----- Responsive ----- */
+    @media (max-width: 600px) {
+      nav ul { flex-direction: column; gap: .75rem; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>EzRecycle</h1>
+    <nav>
+      <ul>
+        <li><a href="#home" data-section="home">Home</a></li>
+        <li><a href="#quiz" data-section="quiz">Quiz & Planner</a></li>
+        <li><a href="#resources" data-section="resources">Resources</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Home Section -->
+    <section id="home" class="active">
+      <h2>Welcome!</h2>
+      <p>Everyday actions make a difference. <strong>EzRecycle</strong> guides you on what, where, and how to recycle your common household items, and gives you tools to build lasting eco‑friendly habits.</p>
+      <p>Use the menu above to take our interactive quiz, track your recycling goals, or explore local laws and drop‑off locations.</p>
+    </section>
+
+    <!-- Quiz & Planner Section -->
+    <section id="quiz">
+      <div class="card" id="quiz-card">
+        <h3>Recycling Quiz</h3>
+        <p>Type an object (e.g., "pizza box", "glass bottle") and learn how to dispose of it properly.</p>
+        <form id="quizForm">
+          <input type="text" id="objectInput" placeholder="Enter an object" required />
+          <button type="submit">Check</button>
+        </form>
+        <p id="quizResult" style="margin-top:.75rem;font-weight:bold;"></p>
+      </div>
+
+      <div class="card" id="planner-card">
+        <h3>Recycling Habit Planner</h3>
+        <p>Create simple, trackable goals to improve your recycling routine.</p>
+        <form id="plannerForm">
+          <input type="text" id="taskInput" placeholder="Goal (e.g., Take electronics to e-waste center)" required />
+          <input type="date" id="dateInput" />
+          <button type="submit">Add Goal</button>
+        </form>
+        <ul class="task-list" id="taskList"></ul>
+      </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources">
+      <h2>Recycling Laws & Local Drop-off Points</h2>
+      <p>Laws vary by city and state. Check these links for up-to-date guidelines:</p>
+      <div class="resource-grid">
+        <div class="card">
+          <h3>U.S. EPA Recycling Guide</h3>
+          <p><a href="https://www.epa.gov/recycle" target="_blank" rel="noopener">EPA.gov/recycle</a></p>
+        </div>
+        <div class="card">
+          <h3>Earth911 Search</h3>
+          <p>Find the nearest facility for almost anything: <a href="https://search.earth911.com" target="_blank" rel="noopener">search.earth911.com</a></p>
+        </div>
+        <div class="card">
+          <h3>Plastic Film Recycling</h3>
+          <p><a href="https://www.plasticfilmrecycling.org/recycling-bags-and-wraps/find-drop-off-location/" target="_blank" rel="noopener">Find drop‑offs for grocery bags & wraps</a></p>
+        </div>
+      </div>
+      <h3 style="margin-top:1.5rem;">Quick Tip</h3>
+      <p>When in doubt, toss it out — non‑recyclables mixed with recyclables create contamination.</p>
+    </section>
+  </main>
+
+  <script>
+    // Navigation logic
+    const navLinks = document.querySelectorAll('nav a');
+    const sections = document.querySelectorAll('main section');
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const sectionId = link.dataset.section;
+        showSection(sectionId);
+        history.pushState(null, '', '#' + sectionId);
+      });
+    });
+
+    function showSection(id) {
+      sections.forEach(sec => {
+        sec.classList.toggle('active', sec.id === id);
+      });
+    }
+
+    // Load section from hash if present
+    if (location.hash) {
+      showSection(location.hash.substring(1));
+    }
+
+    // Quiz logic
+    const quizData = {
+      'paper': 'Recycle curbside if clean and dry. Shred confidential documents first.',
+      'pizza box': 'Compost if greasy, recycle only the clean top flap.',
+      'glass bottle': 'Rinse and recycle curbside. Remove caps; labels can stay.',
+      'plastic bag': 'Return to grocery store drop-off bins; do NOT put in curbside bin.',
+      'battery': 'Take to an e-waste or hazardous waste facility; never curbside.',
+      'styrofoam': 'Typically not curbside recyclable. Check specialty drop-offs or reuse.',
+      'coffee cup': 'Paper cups often have plastic lining; compost the paper sleeve, trash the cup unless your city accepts it.',
+      'aluminum can': 'Rinse and recycle curbside. Crushing saves space but is optional.'
+    };
+
+    const quizForm = document.getElementById('quizForm');
+    const objectInput = document.getElementById('objectInput');
+    const quizResult = document.getElementById('quizResult');
+
+    quizForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const key = objectInput.value.trim().toLowerCase();
+      const result = quizData[key] || 'Item not found. Try a different description or check your local guidelines.';
+      quizResult.textContent = result;
+      objectInput.value = '';
+    });
+
+    // Planner logic
+    const plannerForm = document.getElementById('plannerForm');
+    const taskInput = document.getElementById('taskInput');
+    const dateInput = document.getElementById('dateInput');
+    const taskList = document.getElementById('taskList');
+
+    // use consistent key name
+    const STORAGE_KEY = 'ezRecycleTasks';
+
+    function loadTasks() {
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      taskList.innerHTML = '';
+      tasks.forEach((t, idx) => renderTask(t, idx));
+    }
+
+    function saveTasks(tasks) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    }
+
+    function renderTask(task, idx) {
+      const li = document.createElement('li');
+      const span = document.createElement('span');
+      span.textContent = `${task.text}${task.date ? ' (by ' + task.date + ')' : ''}`;
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✓';
+      delBtn.style.background = 'var(--primary-light)';
+      delBtn.style.color = '#fff';
+      delBtn.style.border = 'none';
+      delBtn.style.padding = '.3rem .6rem';
+      delBtn.style.borderRadius = '6px';
+      delBtn.addEventListener('click', () => {
+        const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        tasks.splice(idx, 1);
+        saveTasks(tasks);
+        loadTasks();
+      });
+      li.appendChild(span);
+      li.appendChild(delBtn);
+      taskList.appendChild(li);
+    }
+
+    plannerForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const newTask = { text: taskInput.value.trim(), date: dateInput.value };
+      if (!newTask.text) return;
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      tasks.push(newTask);
+      saveTasks(tasks);
+      taskInput.value = '';
+      dateInput.value = '';
+      loadTasks();
+    });
+
+    // Init
+    loadTasks();
+  </script>
+</body>
 </html>

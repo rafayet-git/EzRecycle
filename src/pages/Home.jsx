@@ -22,12 +22,20 @@ export default function EzRecycleHome() {
             <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8">
               EzRecycle guides you with clear steps, local resources, and personalized planning to make eco‑friendly habits stick.
             </p>
-            <Link
-              to="/guide"
-              className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-2xl shadow"
-            >
-              Take the Quick Quiz
-            </Link>
+            <div className="flex flex-col items-center gap-4">
+              <Link
+                to="/guide"
+                className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-2xl shadow"
+              >
+                Take the Quick Quiz
+              </Link>
+              <Link
+                to="https://github.com/rafayet-git/EzRecycle"
+                className="inline-block bg-black hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-2xl shadow"
+              >
+                View Source Code @ GitHub
+              </Link>
+            </div>
           </div>
         </section>
 

@@ -10,7 +10,7 @@ class GeminiRecyclingService {
     }
     
     this.genAI = new GoogleGenerativeAI(this.apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
   }
 
   async getRecyclingGuidance(itemDescription) {
@@ -91,7 +91,7 @@ IMPORTANT NOTES:
 - Provide alternatives when recycling isn't the best option
 - Be educational about why certain disposal methods are recommended
 
-Respond ONLY with valid JSON, no additional text.`;
+Respond ONLY with valid JSON, no additional text nor formatting (example: do not include Markdown bolding).`;
   }
 
   parseResponse(responseText) {

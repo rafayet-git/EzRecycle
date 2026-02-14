@@ -109,6 +109,24 @@ function Guide() {
         }
     };
 
+    const handleFormKeyDown = (e) => {
+        if (e.key !== 'Enter') return;
+        if (e.target && e.target.tagName === 'TEXTAREA') return;
+
+        if (currentStep < 4) {
+            e.preventDefault();
+            if (currentStep === 1 && formData.itemName.trim()) {
+                setCurrentStep(2);
+                return;
+            } else if (currentStep === 2 && formData.materials.length > 0) {
+                setCurrentStep(3);
+                return;
+            } else if (currentStep === 3) {
+                setCurrentStep(4);
+            }
+        }
+    };
+
     const resetForm = () => {
         setFormData({
             itemName: '',
@@ -149,7 +167,7 @@ function Guide() {
 
                 {!recyclingGuidance ? (
                     <div className="bg-white rounded-2xl shadow p-8">
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown}>
                             {/* Progress Bar */}
                             <div className="mb-8">
                                 <div className="flex justify-between text-sm text-gray-600 mb-2">
